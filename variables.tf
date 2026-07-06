@@ -19,5 +19,39 @@ EOT
     managed_hsm_key_id = optional(string)
     user_identity      = optional(string)
   }))
+  validation {
+    condition = alltrue([
+      for k, v in var.kusto_cluster_customer_managed_keys : (
+        v.key_name == null || (length(v.key_name) > 0)
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.kusto_cluster_customer_managed_keys : (
+        v.key_version == null || (length(v.key_version) > 0)
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  # --- Unconfirmed validation candidates, derived from azurerm_kusto_cluster_customer_managed_key's provider source ---
+  # Not auto-enabled: either a bespoke provider validator we can't safely translate,
+  # or a path that crosses a list-typed block (needs its own for_each wrapping).
+  # Review, translate into a real validation{} block above, and delete once confirmed.
+  # path: cluster_id
+  #   source:    [from commonids.ValidateKustoClusterID] !ok
+  # path: cluster_id
+  #   source:    [from commonids.ValidateKustoClusterID] err != nil
+  # path: key_vault_id
+  #   source:    [from commonids.ValidateKeyVaultID] !ok
+  # path: key_vault_id
+  #   source:    [from commonids.ValidateKeyVaultID] err != nil
+  # path: managed_hsm_key_id
+  #   source:    validation.Any(...) - no translation rule yet, add one
+  # path: user_identity
+  #   source:    [from commonids.ValidateUserAssignedIdentityID] !ok
+  # path: user_identity
+  #   source:    [from commonids.ValidateUserAssignedIdentityID] err != nil
 }
 
