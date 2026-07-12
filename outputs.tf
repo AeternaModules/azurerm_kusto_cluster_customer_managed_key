@@ -1,3 +1,7 @@
+output "kusto_cluster_customer_managed_keys_id" {
+  description = "Map of id values across all kusto_cluster_customer_managed_keys, keyed the same as var.kusto_cluster_customer_managed_keys"
+  value       = { for k, v in azurerm_kusto_cluster_customer_managed_key.kusto_cluster_customer_managed_keys : k => v.id }
+}
 output "kusto_cluster_customer_managed_keys_cluster_id" {
   description = "Map of cluster_id values across all kusto_cluster_customer_managed_keys, keyed the same as var.kusto_cluster_customer_managed_keys"
   value       = { for k, v in azurerm_kusto_cluster_customer_managed_key.kusto_cluster_customer_managed_keys : k => v.cluster_id }
